@@ -275,5 +275,35 @@ export function buildBenchmarkReturnSeries(
   return points;
 }
 
+/**
+ * Mark-to-market portfolio value on a given date, using qty-timelines and
+ * per-symbol price histories. Symbols with no available history at or before
+ * `date` contribute 0. If no `priceHistories` are passed, returns null.
+ */
+export function portfolioMvOnDate(
+  date: string,
+  qtyTimelines: QtyTimeline,
+  priceHistories: Map<string, Map<string, number>>,
+): number | null {
+  if (priceHistories.size === 0 || qtyTimelines.size === 0) return null;
+  const sortedKeysCache = new Map<string, string[]>();
+  let mv = 0;
+  for (const [symbol, timeline] of qtyTimelines) {
+    const q = qtyOnDate(timeline, date);
+    if (q <= 0) continue;
+    const hist = priceHistories.get(symbol);
+    if (!hist || hist.size === 0) continue;
+    let keys = sortedKeysCache.get(symbol);
+    if (!keys) {
+      keys = [...hist.keys()].sort();
+      sortedKeysCache.set(symbol, keys);
+    }
+    const px = priceOnOrBefore(keys, hist, date);
+    if (px == null) continue;
+    mv += q * px;
+  }
+  return mv;
+}
+
 // Re-export for downstream callers that want the type.
 export type { QtyPoint, QtyTimeline };

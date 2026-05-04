@@ -9,11 +9,13 @@ import { applySymbolAliases } from '@/lib/analytics/symbolAliases';
 import type { NormalizedTrade } from '@/lib/parsers/types';
 import { tradesAndDividendsToCashflows } from '@/lib/analytics/portfolioCashflows';
 import { xirr, type Cashflow } from '@/lib/analytics/xirr';
-import { computeBenchmarkXirr } from '@/lib/analytics/benchmarkXirr';
+import { computeBenchmarkXirr, computeBenchmarkWindowXirr } from '@/lib/analytics/benchmarkXirr';
 import {
   buildBenchmarkReturnSeries,
   buildPortfolioReturnSeries,
+  portfolioMvOnDate,
 } from '@/lib/analytics/benchmarkSeries';
+import { windowXirr } from '@/lib/analytics/windowXirr';
 import {
   BENCHMARKS,
   fetchBenchmarkClose,
@@ -26,7 +28,12 @@ import {
   type MfBenchmarkId,
 } from '@/lib/pricing/mfBenchmarks';
 import { Card } from '@/components/ui/Card';
-import { BenchmarkChartClient, type BenchmarkBundle } from './BenchmarkChartClient';
+import {
+  BenchmarkChartClient,
+  type BenchmarkBundle,
+  type WindowBundle,
+  type WindowId,
+} from './BenchmarkChartClient';
 
 function fmtPct(n: number | null): string {
   if (n == null || !Number.isFinite(n)) return '—';
@@ -77,6 +84,26 @@ function yearsSince(iso: string, today: string): number {
   const a = Date.parse(`${iso}T00:00:00Z`);
   const b = Date.parse(`${today}T00:00:00Z`);
   return (b - a) / (365 * 86_400_000);
+}
+
+function isoMonthsBefore(iso: string, months: number): string {
+  const t = Date.parse(`${iso}T00:00:00Z`);
+  const d = new Date(t);
+  const targetMonth = d.getUTCMonth() - months;
+  d.setUTCMonth(targetMonth);
+  return d.toISOString().slice(0, 10);
+}
+
+function latestNav(series: Map<string, number>): number {
+  let latestKey = '';
+  let latest = 0;
+  for (const [k, v] of series) {
+    if (k > latestKey) {
+      latestKey = k;
+      latest = v;
+    }
+  }
+  return latest;
 }
 
 type Props = { portfolioId: string };
@@ -307,6 +334,57 @@ export async function BenchmarkCard({ portfolioId }: Props) {
     monthlySamples: true,
   });
 
+  // Pre-compute window XIRRs for each preset range. Cheap — pure-CPU work
+  // over already-loaded series.
+  const windowDefs: { id: WindowId; label: string; months: number | null }[] = [
+    { id: '1M', label: '1M', months: 1 },
+    { id: '3M', label: '3M', months: 3 },
+    { id: '6M', label: '6M', months: 6 },
+    { id: '1Y', label: '1Y', months: 12 },
+    { id: '3Y', label: '3Y', months: 36 },
+    { id: '5Y', label: '5Y', months: 60 },
+    { id: 'ALL', label: 'All', months: null },
+  ];
+  const benchmarkIds = [...BENCHMARKS.map((b) => b.id), ...MF_BENCHMARKS.map((b) => b.id)];
+  const windowBundles: WindowBundle[] = windowDefs.map((def) => {
+    const startDate = def.months == null ? cashflows[0]!.date : isoMonthsBefore(today, def.months);
+    const startMv =
+      def.months == null ? 0 : (portfolioMvOnDate(startDate, qtyTimelines, priceHistories) ?? 0);
+    const portfolioRate = windowXirr({
+      cashflows,
+      startDate,
+      startMv,
+      endDate: today,
+      endMv: portfolioMv ?? 0,
+    });
+    const benchmarkXirrs: Record<string, number | null> = {};
+    for (const id of benchmarkIds) {
+      const isMf = MF_BENCHMARKS.some((b) => b.id === id);
+      const series = isMf
+        ? (mfSeriesById.get(id as MfBenchmarkId) ?? new Map<string, number>())
+        : (seriesById.get(id as BenchmarkId) ?? new Map<string, number>());
+      const currentClose = isMf ? latestNav(series) : (closeById.get(id as BenchmarkId) ?? 0);
+      if (currentClose <= 0) {
+        benchmarkXirrs[id] = null;
+        continue;
+      }
+      benchmarkXirrs[id] = computeBenchmarkWindowXirr({
+        cashflows,
+        series,
+        startDate,
+        endDate: today,
+        currentClose,
+      });
+    }
+    return {
+      id: def.id,
+      label: def.label,
+      startDate,
+      portfolioXirr: portfolioRate,
+      benchmarkXirrs,
+    };
+  });
+
   return (
     <Card>
       <div className="flex flex-col gap-4">
@@ -327,7 +405,9 @@ export async function BenchmarkCard({ portfolioId }: Props) {
             xirr: portfolioRate,
           }}
           benchmarks={benchmarkBundles}
+          windows={windowBundles}
           defaultSelected={['nifty50']}
+          defaultWindow="ALL"
         />
       </div>
     </Card>
