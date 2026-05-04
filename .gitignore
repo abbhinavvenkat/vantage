@@ -1,0 +1,96 @@
+# --- Privacy: ALL personal data lives in data/ and never enters git ---
+data/
+# Exceptions — these subtrees ARE committed:
+!data/sample/
+data/sample/*.private.*
+!data/investor_stalwarts/
+!data/investor_stalwarts/**
+
+# Belt-and-braces: never commit raw codex artifacts even under the exception above
+data/codex/raw/
+data/codex/extracted/
+data/codex/distilled/
+data/codex/synthesized/
+data/codex/backtests/
+data/codex/trade-replays/
+data/codex/discovery/
+data/sources/
+data/research/
+data/tradebooks/
+data/prices/
+data/app.db
+data/test.db
+
+# Tradebooks / broker exports — defence in depth (also covered by data/)
+*.xlsx
+*.csv
+*.xls
+!tests/**/*.csv
+!tests/**/*.xlsx
+!data/sample/**/*.csv
+!data/sample/**/*.xlsx
+
+# SQLite + WAL
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+dist/
+build/
+coverage/
+.turbo/
+.swc/
+*.tsbuildinfo
+next-env.d.ts
+
+# Playwright
+playwright-report/
+test-results/
+blob-report/
+.playwright/
+.playwright-mcp/
+
+# Drizzle
+drizzle/meta/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+!.vscode/extensions.json
+*.swp
+*.swo
+
+# Conda / Python (just in case any helper scripts use it)
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Local Claude state (user opted into committing rules + skills, not state)
+.claude/state/
+.claude/cache/
+.claude/scheduled_tasks.lock
+.claude/settings.local.json
+
+# Existing folders that are PII — keep out of git
+Zerodha Data/
+Initial_Research/

@@ -1,0 +1,819 @@
+# Investor Wisdom Codex — seed roster
+#
+# Every investor entry below drives the codex pipeline:
+#   codex-fetch   → data/codex/raw/<slug>/
+#   codex-extract → data/codex/extracted/<slug>/
+#   codex-distill → data/codex/distilled/<slug>.json
+#   stalwart-profile-update → data/investor_stalwarts/<slug>.md   (✅ COMMITTED)
+#
+# discovery_mode:
+#   fixed                 — pull from explicit seed_urls only
+#   youtube-referenced    — also scan transcripts for mentioned investors and queue discovery
+#   rss-followed          — subscribe to feed; new posts auto-fetched
+#
+# license_note guidelines:
+#   "Public free letters/blogs/transcripts — full text OK locally"
+#   "Citations only — book content not stored in full"
+#   "Public regulatory filings — full text OK"
+#
+# Lines marked `# verify URL` should be checked at first fetch — if the canonical
+# URL has moved, codex-fetch logs a warning rather than failing the whole run.
+#
+# Controlled vocabulary for `applicability_tags`:
+#   markets:      all-markets, india, us, developed-mkts, emerging-mkts
+#   caps:         all-caps, large-cap, mid-cap, small-cap, micro-cap
+#   sectors:      financials, fmcg, it, pharma, auto, capital-goods, defence,
+#                 metals, energy, infra, chemicals, agri, retail, telecom,
+#                 internet, real-estate, utilities
+#   styles:       value, quality, growth, garp, contrarian, macro, special-situations,
+#                 turnaround, deep-value, compounders, cyclicals, demerger
+#   horizons:     long-duration (>5y), medium (2-5y), short (<2y)
+
+# =============================================================================
+# PRIORITY 1 — R1 corpus (smallest, highest signal)
+# =============================================================================
+
+- slug: buffett
+  name: Warren Buffett
+  style_tags: [value, quality, concentration, long-duration, compounders]
+  primary_geo: us
+  active_period: "1956–present"
+  discovery_mode: fixed
+  seed_urls:
+    - https://www.berkshirehathaway.com/letters/letters.html
+    - https://www.berkshirehathaway.com/2023ar/2023ar.pdf
+  source_kinds: [annual_letters, partnership_letters, qa_transcripts, 13F]
+  license_note: "All Berkshire annual letters publicly available, free to use for personal research"
+  priority: 1
+
+- slug: agrawal
+  name: Raamdeo Agrawal
+  style_tags: [quality, growth, garp, compounders, india]
+  primary_geo: india
+  active_period: "1987–present"
+  discovery_mode: fixed
+  seed_urls:
+    # MOSL Wealth Creation Studies (annual since 1996, free PDFs)
+    - https://www.motilaloswalgroup.com/Wealth-Creation-Studies   # verify URL
+    - https://www.motilaloswal.com/site/rreports/wealth-creation-study   # verify URL
+  source_kinds: [research_studies, interviews, conference_presentations]
+  license_note: "MOSL Wealth Creation Studies free PDFs, full text OK locally"
+  priority: 1
+
+- slug: marks
+  name: Howard Marks
+  style_tags: [value, contrarian, macro, cycles, distressed]
+  primary_geo: us
+  active_period: "1995–present"
+  discovery_mode: fixed
+  seed_urls:
+    - https://www.oaktreecapital.com/insights/memos
+  source_kinds: [memos]
+  license_note: "Oaktree memos free, full text OK locally"
+  priority: 1
+
+- slug: damodaran
+  name: Aswath Damodaran
+  style_tags: [valuation, frameworks, all-markets]
+  primary_geo: global
+  active_period: "1986–present"
+  discovery_mode: fixed
+  seed_urls:
+    - https://pages.stern.nyu.edu/~adamodar/
+    - https://aswathdamodaran.blogspot.com/
+  source_kinds: [blog_posts, papers, datasets]
+  license_note: "All Damodaran NYU + blog content free, full text OK locally"
+  priority: 1
+
+- slug: shankar-nath
+  name: Shankar Nath
+  style_tags: [educator, multi-style, india, discovery-node]
+  primary_geo: india
+  active_period: "2020–present"
+  discovery_mode: youtube-referenced
+  seed_urls:
+    - https://www.youtube.com/@shankarnath
+  source_kinds: [youtube_transcripts]
+  license_note: "YouTube transcripts via youtube-transcript API — public content OK locally"
+  priority: 1
+
+# =============================================================================
+# PRIORITY 2 — R2 corpus
+# =============================================================================
+
+- slug: munger
+  name: Charlie Munger
+  style_tags: [value, quality, mental-models, multidisciplinary]
+  primary_geo: us
+  active_period: "1962–2023"
+  discovery_mode: fixed
+  seed_urls:
+    - https://www.berkshirehathaway.com/letters/letters.html   # appears in Berkshire letters
+    - https://fs.blog/great-talks/psychology-human-misjudgement/   # transcripts hosted at fs.blog and elsewhere
+    - https://www.dailyjournal.com/   # Daily Journal annual meeting Q&A   # verify URL
+  source_kinds: [speeches, qa_transcripts, interview_transcripts]
+  license_note: "Speech/QA transcripts free where publicly hosted; Poor Charlie's Almanack — citations only, book not stored in full"
+  priority: 2
+
+- slug: lynch
+  name: Peter Lynch
+  style_tags: [growth, garp, multi-bagger, all-caps, retail-investor]
+  primary_geo: us
+  active_period: "1977–1990 (Magellan); commentator since"
+  discovery_mode: fixed
+  seed_urls:
+    - https://www.fidelity.com/learning-center/trading-investing/peter-lynch-on-investing   # verify URL
+  source_kinds: [interview_transcripts, lectures]
+  license_note: "Books (One Up, Beating the Street, Learn to Earn) — citations only, not stored in full"
+  priority: 2
+
+- slug: pabrai
+  name: Mohnish Pabrai
+  style_tags: [value, dhandho, low-risk-high-uncertainty, india-and-us]
+  primary_geo: global
+  active_period: "1999–present"
+  discovery_mode: fixed
+  seed_urls:
+    - https://www.pabraifunds.com/
+    - https://www.youtube.com/@mohnish_pabrai
+  source_kinds: [interview_transcripts, lectures, fund_letters]
+  license_note: "Public lectures + fund letters where free; The Dhandho Investor — citations only"
+  priority: 2
+
+- slug: mukherjea
+  name: Saurabh Mukherjea
+  style_tags: [quality, compounders, india, consistent-compounders]
+  primary_geo: india
+  active_period: "2018–present (Marcellus)"
+  discovery_mode: fixed
+  seed_urls:
+    - https://marcellus.in/insights/
+    - https://marcellus.in/blogs/
+  source_kinds: [newsletters, blog_posts, podcasts]
+  license_note: "Marcellus newsletters/blogs free, full text OK; books — citations only"
+  priority: 2
+
+- slug: jhunjhunwala
+  name: Rakesh Jhunjhunwala
+  style_tags: [growth, contrarian, macro, india]
+  primary_geo: india
+  active_period: "1985–2022"
+  discovery_mode: fixed
+  seed_urls:
+    - https://www.youtube.com/results?search_query=rakesh+jhunjhunwala+interview   # discovery seed
+  source_kinds: [interview_transcripts, public_disclosures]
+  license_note: "Public interview transcripts only"
+  priority: 2
+
+- slug: nick-sleep
+  name: Nick Sleep
+  style_tags: [quality, scale-economies-shared, long-duration, concentration]
+  primary_geo: global
+  active_period: "2001–2014 (Nomad)"
+  discovery_mode: fixed
+  seed_urls:
+    - https://igyfoundation.org.uk/wp-content/uploads/2021/03/Full_Collection_Nomad_Letters_.pdf   # verify URL — full Nomad letters compiled
+  source_kinds: [partnership_letters]
+  license_note: "Nomad letters publicly archived for educational use; full text OK locally"
+  priority: 2
+
+- slug: ackman
+  name: Bill Ackman
+  style_tags: [value, activist, concentration, large-cap]
+  primary_geo: us
+  active_period: "2004–present (Pershing Square)"
+  discovery_mode: fixed
+  seed_urls:
+    - https://pershingsquareholdings.com/company-reports/annual-reports/
+    - https://pershingsquareholdings.com/company-reports/interim-reports/
+  source_kinds: [fund_letters, presentations]
+  license_note: "Pershing Square public letters free, full text OK locally"
+  priority: 2
+
+- slug: einhorn
+  name: David Einhorn
+  style_tags: [value, long-short, contrarian, fraud-detection]
+  primary_geo: us
+  active_period: "1996–present (Greenlight)"
+  discovery_mode: fixed
+  seed_urls:
+    - https://www.greenlightcapital.com/   # verify URL
+  source_kinds: [fund_letters, presentations]
+  license_note: "Public letters where free; Fooling Some of the People — citations only"
+  priority: 2
+
+- slug: druckenmiller
+  name: Stanley Druckenmiller
+  style_tags: [macro, growth, concentration, cycles]
+  primary_geo: us
+  active_period: "1981–present"
+  discovery_mode: fixed
+  seed_urls:
+    - https://www.youtube.com/results?search_query=stanley+druckenmiller+interview
+  source_kinds: [interview_transcripts, lectures]
+  license_note: "Public interviews only"
+  priority: 2
+
+- slug: dalio
+  name: Ray Dalio
+  style_tags: [macro, frameworks, all-weather, principles]
+  primary_geo: global
+  active_period: "1975–present"
+  discovery_mode: fixed
+  seed_urls:
+    - https://www.principles.com/
+    - https://www.linkedin.com/in/raydalio/recent-activity/posts/
+  source_kinds: [posts, lectures, principles_book_excerpts]
+  license_note: "principles.com + LinkedIn posts free; books — citations only"
+  priority: 2
+
+# =============================================================================
+# PRIORITY 3 — R3 corpus (Indian fund managers + remaining global)
+# =============================================================================
+
+# --- Global classics ---
+
+- slug: graham
+  name: Benjamin Graham
+  style_tags: [value, deep-value, margin-of-safety, frameworks]
+  primary_geo: us
+  active_period: "1914–1956"
+  discovery_mode: fixed
+  seed_urls:
+    - https://www.serenitystocks.com/system/files/articles/security-analysis-1934-grahamdodd.pdf   # verify — historical fair-use copies exist
+  source_kinds: [book_excerpts, lectures]
+  license_note: "Security Analysis & Intelligent Investor — citations only; lectures free"
+  priority: 3
+
+- slug: fisher
+  name: Philip Fisher
+  style_tags: [growth, quality, scuttlebutt, long-duration]
+  primary_geo: us
+  active_period: "1931–2004"
+  discovery_mode: fixed
+  seed_urls: []   # no canonical free archive — codex-fetch will warn
+  source_kinds: [book_excerpts]
+  license_note: "Common Stocks and Uncommon Profits — citations only"
+  priority: 3
+
+- slug: templeton
+  name: John Templeton
+  style_tags: [value, contrarian, global, emerging-mkts]
+  primary_geo: global
+  active_period: "1937–2008"
+  discovery_mode: fixed
+  seed_urls:
+    - https://www.templeton.org/discoveries/sir-john-templeton   # verify URL
+  source_kinds: [interview_transcripts, articles]
+  license_note: "Templeton Foundation hosts free articles; books — citations only"
+  priority: 3
+
+- slug: neff
+  name: John Neff
+  style_tags: [value, low-pe, contrarian, large-cap]
+  primary_geo: us
+  active_period: "1964–1995"
+  discovery_mode: fixed
+  seed_urls: []
+  source_kinds: [book_excerpts, interviews]
+  license_note: "John Neff on Investing — citations only"
+  priority: 3
+
+- slug: schloss
+  name: Walter Schloss
+  style_tags: [deep-value, diversified, statistical-bargains]
+  primary_geo: us
+  active_period: "1955–2002"
+  discovery_mode: fixed
+  seed_urls:
+    - https://www8.gsb.columbia.edu/articles/news/walter-schloss-tribute   # verify URL
+  source_kinds: [interviews, lectures]
+  license_note: "Public lectures + interviews; no books"
+  priority: 3
+
+- slug: klarman
+  name: Seth Klarman
+  style_tags: [value, deep-value, special-situations, distressed, margin-of-safety]
+  primary_geo: us
+  active_period: "1982–present"
+  discovery_mode: fixed
+  seed_urls: []
+  source_kinds: [fund_letters_excerpts]
+  license_note: "Margin of Safety — citations only (out of print, expensive); selected letter excerpts public"
+  priority: 3
+
+- slug: greenwald
+  name: Bruce Greenwald
+  style_tags: [value, frameworks, eba-eva, columbia]
+  primary_geo: us
+  active_period: "1990–present"
+  discovery_mode: fixed
+  seed_urls:
+    - https://www8.gsb.columbia.edu/leadership/profile/bruce-greenwald   # verify URL
+  source_kinds: [lectures, papers]
+  license_note: "Lectures free; Value Investing book — citations only"
+  priority: 3
+
+- slug: greenblatt
+  name: Joel Greenblatt
+  style_tags: [value, special-situations, magic-formula, spinoffs]
+  primary_geo: us
+  active_period: "1985–present (Gotham)"
+  discovery_mode: fixed
+  seed_urls:
+    - https://www.gothamfunds.com/   # verify URL
+  source_kinds: [lectures, papers]
+  license_note: "Lectures + research papers free; books — citations only"
+  priority: 3
+
+- slug: dorsey
+  name: Pat Dorsey
+  style_tags: [moats, quality, frameworks]
+  primary_geo: us
+  active_period: "2000–present"
+  discovery_mode: fixed
+  seed_urls:
+    - https://dorseyasset.com/   # verify URL
+  source_kinds: [lectures, interviews]
+  license_note: "Lectures free; The Five Rules / The Little Book That Builds Wealth — citations only"
+  priority: 3
+
+- slug: terry-smith
+  name: Terry Smith
+  style_tags: [quality, compounders, long-duration, fundsmith]
+  primary_geo: global
+  active_period: "2010–present (Fundsmith)"
+  discovery_mode: fixed
+  seed_urls:
+    - https://www.fundsmith.co.uk/news/letters-to-shareholders/
+    - https://www.fundsmith.co.uk/news/owners-manual/
+  source_kinds: [annual_letters, owners_manual]
+  license_note: "Fundsmith letters + owner's manuals free, full text OK locally"
+  priority: 3
+
+- slug: pulak-prasad
+  name: Pulak Prasad
+  style_tags: [quality, concentration, india, avoid-losers]
+  primary_geo: india
+  active_period: "2007–present (Nalanda)"
+  discovery_mode: fixed
+  seed_urls:
+    - https://www.nalandacapital.com/
+  source_kinds: [interview_transcripts, lectures]
+  license_note: "Public interviews; What I Learned About Investing from Darwin — citations only"
+  priority: 3
+
+- slug: spier
+  name: Guy Spier
+  style_tags: [value, quality, behavioural, india-and-us]
+  primary_geo: global
+  active_period: "1997–present (Aquamarine)"
+  discovery_mode: fixed
+  seed_urls:
+    - https://www.aquamarinefund.com/
+    - https://www.guyspier.com/
+  source_kinds: [interview_transcripts, blog_posts]
+  license_note: "Public talks + blog free; The Education of a Value Investor — citations only"
+  priority: 3
+
+- slug: li-lu
+  name: Li Lu
+  style_tags: [value, asia, concentration]
+  primary_geo: global
+  active_period: "1997–present (Himalaya Capital)"
+  discovery_mode: fixed
+  seed_urls: []
+  source_kinds: [lectures, interviews]
+  license_note: "Public Columbia + Peking lectures free where transcribed"
+  priority: 3
+
+- slug: akre
+  name: Chuck Akre
+  style_tags: [quality, compounders, three-legged-stool]
+  primary_geo: us
+  active_period: "1993–present"
+  discovery_mode: fixed
+  seed_urls:
+    - https://www.akrecapital.com/   # verify URL
+  source_kinds: [investor_letters, lectures]
+  license_note: "Public letters + Manual of Ideas talks where free"
+  priority: 3
+
+- slug: russo
+  name: Tom Russo
+  style_tags: [quality, global-consumer, capacity-to-suffer, long-duration]
+  primary_geo: global
+  active_period: "1989–present (Gardner Russo)"
+  discovery_mode: fixed
+  seed_urls: []
+  source_kinds: [lectures, interviews]
+  license_note: "Public talks where free"
+  priority: 3
+
+- slug: rochon
+  name: François Rochon
+  style_tags: [quality, growth, long-duration, giverny]
+  primary_geo: us
+  active_period: "1998–present (Giverny Capital)"
+  discovery_mode: fixed
+  seed_urls:
+    - https://www.givernycapital.com/en/letters/
+  source_kinds: [annual_letters]
+  license_note: "Giverny annual letters free, full text OK locally"
+  priority: 3
+
+- slug: mecham
+  name: Allan Mecham
+  style_tags: [value, concentration, low-profile]
+  primary_geo: us
+  active_period: "1999–2020 (Arlington Value)"
+  discovery_mode: fixed
+  seed_urls: []
+  source_kinds: [letter_excerpts, interviews]
+  license_note: "Excerpts + interviews where public"
+  priority: 3
+
+- slug: bill-miller
+  name: Bill Miller
+  style_tags: [value, contrarian, technology, lmm]
+  primary_geo: us
+  active_period: "1981–present"
+  discovery_mode: fixed
+  seed_urls:
+    - https://millervalue.com/   # verify URL
+  source_kinds: [fund_letters, interviews]
+  license_note: "Public letters where free"
+  priority: 3
+
+# --- Frameworks ---
+
+- slug: mauboussin
+  name: Michael Mauboussin
+  style_tags: [frameworks, mental-models, base-rates]
+  primary_geo: global
+  active_period: "1992–present"
+  discovery_mode: fixed
+  seed_urls:
+    - https://www.morganstanley.com/im/en-us/individual-investor/insights/articles/consilient-observer-michael-mauboussin.html   # verify URL
+    - https://www.michaelmauboussin.com/   # verify URL
+  source_kinds: [research_notes, books_excerpts]
+  license_note: "Morgan Stanley Counterpoint research notes free; books — citations only"
+  priority: 3
+
+- slug: housel
+  name: Morgan Housel
+  style_tags: [behavioural, frameworks, accessible]
+  primary_geo: global
+  active_period: "2007–present"
+  discovery_mode: fixed
+  seed_urls:
+    - https://collabfund.com/blog/
+  source_kinds: [blog_posts]
+  license_note: "Collab Fund blog free; books — citations only"
+  priority: 3
+
+- slug: siegel
+  name: Jeremy Siegel
+  style_tags: [frameworks, equity-risk-premium, dividend-investing, long-duration]
+  primary_geo: us
+  active_period: "1972–present"
+  discovery_mode: fixed
+  seed_urls: []
+  source_kinds: [papers, interviews]
+  license_note: "Stocks for the Long Run — citations only; academic papers free"
+  priority: 3
+
+# --- Indian classic + recent (interview-driven) ---
+
+- slug: kedia
+  name: Vijay Kedia
+  style_tags: [growth, smallcap-multi-bagger, india, smkk-framework]
+  primary_geo: india
+  active_period: "1989–present"
+  discovery_mode: fixed
+  seed_urls:
+    - https://www.youtube.com/results?search_query=vijay+kedia+interview
+  source_kinds: [interview_transcripts]
+  license_note: "Public interviews only"
+  priority: 3
+
+- slug: maheshwari
+  name: Basant Maheshwari
+  style_tags: [growth, india, concentrated-portfolio]
+  primary_geo: india
+  active_period: "1995–present"
+  discovery_mode: fixed
+  seed_urls:
+    - https://www.youtube.com/@BasantMaheshwariWealthAdvisers
+  source_kinds: [youtube_transcripts, interviews]
+  license_note: "Public channel + interviews"
+  priority: 3
+
+- slug: porinju
+  name: Porinju Veliyath
+  style_tags: [contrarian, smallcap, special-situations, india]
+  primary_geo: india
+  active_period: "1999–present"
+  discovery_mode: fixed
+  seed_urls:
+    - https://www.youtube.com/results?search_query=porinju+veliyath+interview
+  source_kinds: [interview_transcripts]
+  license_note: "Public interviews"
+  priority: 3
+
+- slug: samir-arora
+  name: Samir Arora
+  style_tags: [growth, india, concentrated, helios]
+  primary_geo: india
+  active_period: "1989–present (Helios since 2005)"
+  discovery_mode: fixed
+  seed_urls:
+    - https://www.helioscapital.in/   # verify URL
+  source_kinds: [letters, interviews]
+  license_note: "Public letters + interviews"
+  priority: 3
+
+- slug: bhattacharyya
+  name: Sanjoy Bhattacharyya
+  style_tags: [value, india, fundamentals]
+  primary_geo: india
+  active_period: "1988–present"
+  discovery_mode: fixed
+  seed_urls: []
+  source_kinds: [interviews, columns]
+  license_note: "Public columns + interviews"
+  priority: 3
+
+- slug: damani
+  name: Ramesh Damani
+  style_tags: [long-duration, india, themes]
+  primary_geo: india
+  active_period: "1989–present"
+  discovery_mode: fixed
+  seed_urls:
+    - https://www.youtube.com/results?search_query=ramesh+damani+interview
+  source_kinds: [interview_transcripts]
+  license_note: "Public interviews"
+  priority: 3
+
+- slug: shyam-sekhar
+  name: Shyam Sekhar
+  style_tags: [india, smallcap, contrarian, ithought]
+  primary_geo: india
+  active_period: "1990s–present"
+  discovery_mode: fixed
+  seed_urls:
+    - https://ithoughtadvisory.com/   # verify URL
+    - https://www.youtube.com/results?search_query=shyam+sekhar+ithought
+  source_kinds: [blog_posts, interview_transcripts]
+  license_note: "Public blog + interviews"
+  priority: 3
+
+- slug: ridham-desai
+  name: Ridham Desai
+  style_tags: [india, strategy, large-cap, morgan-stanley]
+  primary_geo: india
+  active_period: "1990s–present (Morgan Stanley India)"
+  discovery_mode: fixed
+  seed_urls:
+    - https://www.youtube.com/results?search_query=ridham+desai+morgan+stanley
+  source_kinds: [research_notes_excerpts, interviews]
+  license_note: "Public commentary; research notes — citations only (broker proprietary)"
+  priority: 3
+
+# --- Top Indian fund managers (recency) ---
+
+- slug: prashant-jain
+  name: Prashant Jain
+  style_tags: [india, large-cap, value, hdfc-amc-alumni, 3p-investment]
+  primary_geo: india
+  active_period: "1991–present (HDFC AMC 1994–2022; 3P Investment since 2022)"
+  discovery_mode: fixed
+  seed_urls:
+    - https://www.3pinvestmentmanagers.com/   # verify URL
+    - https://www.youtube.com/results?search_query=prashant+jain+interview
+  source_kinds: [letters, interview_transcripts, fund_commentary]
+  license_note: "Public commentary; HDFC AMC factsheets free, full text OK"
+  priority: 3
+
+- slug: sankaran-naren
+  name: Sankaran Naren
+  style_tags: [india, value, contrarian, asset-allocation, icici-pru]
+  primary_geo: india
+  active_period: "1989–present (ICICI Pru AMC)"
+  discovery_mode: fixed
+  seed_urls:
+    - https://www.icicipruamc.com/   # verify URL
+    - https://www.youtube.com/results?search_query=s+naren+icici
+  source_kinds: [fund_commentary, interview_transcripts]
+  license_note: "Public commentary; AMC factsheets free"
+  priority: 3
+
+- slug: nilesh-shah
+  name: Nilesh Shah
+  style_tags: [india, multi-asset, kotak-amc, macro]
+  primary_geo: india
+  active_period: "1994–present (Kotak AMC since 2014)"
+  discovery_mode: fixed
+  seed_urls:
+    - https://www.kotakmf.com/   # verify URL
+    - https://www.youtube.com/results?search_query=nilesh+shah+kotak
+  source_kinds: [fund_commentary, interviews]
+  license_note: "Public commentary"
+  priority: 3
+
+- slug: navneet-munot
+  name: Navneet Munot
+  style_tags: [india, multi-asset, fixed-income, hdfc-amc]
+  primary_geo: india
+  active_period: "1994–present (HDFC AMC since 2021)"
+  discovery_mode: fixed
+  seed_urls:
+    - https://www.hdfcfund.com/   # verify URL
+  source_kinds: [fund_commentary, interviews]
+  license_note: "Public commentary"
+  priority: 3
+
+- slug: roshi-jain
+  name: Roshi Jain
+  style_tags: [india, large-cap, growth, hdfc-amc]
+  primary_geo: india
+  active_period: "2005–present (HDFC AMC since 2022)"
+  discovery_mode: fixed
+  seed_urls:
+    - https://www.hdfcfund.com/   # verify URL
+  source_kinds: [fund_commentary, interviews]
+  license_note: "Public commentary"
+  priority: 3
+
+- slug: anand-radhakrishnan
+  name: Anand Radhakrishnan
+  style_tags: [india, large-cap, sundaram]
+  primary_geo: india
+  active_period: "1994–present (Sundaram MF)"
+  discovery_mode: fixed
+  seed_urls:
+    - https://www.sundarammutual.com/   # verify URL
+  source_kinds: [fund_commentary, interviews]
+  license_note: "Public commentary"
+  priority: 3
+
+- slug: kenneth-andrade
+  name: Kenneth Andrade
+  style_tags: [india, mid-cap, contrarian, old-bridge]
+  primary_geo: india
+  active_period: "2005–present (Old Bridge Capital since 2016)"
+  discovery_mode: fixed
+  seed_urls:
+    - https://www.oldbridgecapital.com/   # verify URL
+    - https://www.youtube.com/results?search_query=kenneth+andrade+old+bridge
+  source_kinds: [letters, interviews]
+  license_note: "Public letters + interviews"
+  priority: 3
+
+- slug: sunil-singhania
+  name: Sunil Singhania
+  style_tags: [india, mid-cap, abakkus, growth]
+  primary_geo: india
+  active_period: "1994–present (Abakkus since 2018)"
+  discovery_mode: fixed
+  seed_urls:
+    - https://www.abakkusinvest.com/   # verify URL
+  source_kinds: [letters, interviews]
+  license_note: "Public letters + interviews"
+  priority: 3
+
+- slug: madhusudan-kela
+  name: Madhusudan Kela
+  style_tags: [india, multi-cap, mk-ventures]
+  primary_geo: india
+  active_period: "1994–present"
+  discovery_mode: fixed
+  seed_urls:
+    - https://www.youtube.com/results?search_query=madhusudan+kela
+  source_kinds: [interview_transcripts]
+  license_note: "Public interviews"
+  priority: 3
+
+- slug: hiren-ved
+  name: Hiren Ved
+  style_tags: [india, growth, alchemy, multi-cap]
+  primary_geo: india
+  active_period: "1996–present (Alchemy)"
+  discovery_mode: fixed
+  seed_urls:
+    - https://www.alchemycapital.com/   # verify URL
+  source_kinds: [letters, interviews]
+  license_note: "Public commentary"
+  priority: 3
+
+- slug: harsha-upadhyaya
+  name: Harsha Upadhyaya
+  style_tags: [india, large-cap, kotak-amc]
+  primary_geo: india
+  active_period: "1995–present (Kotak AMC)"
+  discovery_mode: fixed
+  seed_urls:
+    - https://www.kotakmf.com/   # verify URL
+  source_kinds: [fund_commentary, interviews]
+  license_note: "Public commentary"
+  priority: 3
+
+- slug: manish-gunwani
+  name: Manish Gunwani
+  style_tags: [india, multi-cap, bandhan]
+  primary_geo: india
+  active_period: "1996–present"
+  discovery_mode: fixed
+  seed_urls:
+    - https://www.youtube.com/results?search_query=manish+gunwani
+  source_kinds: [fund_commentary, interviews]
+  license_note: "Public commentary"
+  priority: 3
+
+- slug: mahesh-patil
+  name: Mahesh Patil
+  style_tags: [india, large-cap, aditya-birla]
+  primary_geo: india
+  active_period: "1992–present (Aditya Birla SL)"
+  discovery_mode: fixed
+  seed_urls:
+    - https://mutualfund.adityabirlacapital.com/   # verify URL
+  source_kinds: [fund_commentary, interviews]
+  license_note: "Public commentary"
+  priority: 3
+
+- slug: r-srinivasan
+  name: R. Srinivasan
+  style_tags: [india, smallcap, sbi-mf]
+  primary_geo: india
+  active_period: "1996–present (SBI MF)"
+  discovery_mode: fixed
+  seed_urls:
+    - https://www.sbimf.com/   # verify URL
+  source_kinds: [fund_commentary, interviews]
+  license_note: "Public commentary"
+  priority: 3
+
+- slug: aniruddha-naha
+  name: Aniruddha Naha
+  style_tags: [india, smallcap-midcap, growth]
+  primary_geo: india
+  active_period: "2000–present"
+  discovery_mode: fixed
+  seed_urls:
+    - https://www.youtube.com/results?search_query=aniruddha+naha
+  source_kinds: [interview_transcripts, fund_commentary]
+  license_note: "Public commentary"
+  priority: 3
+
+- slug: devina-mehra
+  name: Devina Mehra
+  style_tags: [india, quant, multi-asset, first-global]
+  primary_geo: india
+  active_period: "1994–present (First Global)"
+  discovery_mode: fixed
+  seed_urls:
+    - https://firstglobalsec.com/   # verify URL
+    - https://www.youtube.com/results?search_query=devina+mehra+first+global
+  source_kinds: [interviews, columns]
+  license_note: "Public commentary"
+  priority: 3
+
+# --- YouTube/Discovery educators ---
+
+- slug: akshat-shrivastava
+  name: Akshat Shrivastava
+  style_tags: [educator, india, multi-asset]
+  primary_geo: india
+  active_period: "2020–present"
+  discovery_mode: youtube-referenced
+  seed_urls:
+    - https://www.youtube.com/@AkshatZayn
+  source_kinds: [youtube_transcripts]
+  license_note: "Public channel"
+  priority: 3
+
+- slug: parimal-ade
+  name: Parimal Ade
+  style_tags: [educator, india, value, investment-talk]
+  primary_geo: india
+  active_period: "2017–present"
+  discovery_mode: youtube-referenced
+  seed_urls:
+    - https://www.youtube.com/@InvestmentTalk
+  source_kinds: [youtube_transcripts]
+  license_note: "Public channel"
+  priority: 3
+
+- slug: pranjal-kamra
+  name: Pranjal Kamra
+  style_tags: [educator, india, value, finology]
+  primary_geo: india
+  active_period: "2017–present"
+  discovery_mode: youtube-referenced
+  seed_urls:
+    - https://www.youtube.com/@pranjalkamra
+  source_kinds: [youtube_transcripts]
+  license_note: "Public channel — filter for thesis-relevant content"
+  priority: 3

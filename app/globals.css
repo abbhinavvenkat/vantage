@@ -1,0 +1,133 @@
+@import 'tailwindcss';
+
+:root {
+  /* Surfaces */
+  --color-bg: #fafafa;
+  --color-fg: #0b0d12;
+  --color-muted: #6b7280;
+  --color-subtle: #9ca3af;
+  --color-border: #e7e8ec;
+  --color-border-strong: #d4d5db;
+  --color-card: #ffffff;
+  --color-card-hover: #f5f6f8;
+  --color-elevated: #ffffff;
+
+  /* Brand / accent */
+  --color-accent: #3563e9;
+  --color-accent-hover: #2851d4;
+  --color-accent-fg: #ffffff;
+  --color-accent-soft: #eaf0ff;
+
+  /* Semantic */
+  --color-pos: #059669;
+  --color-pos-soft: #ecfdf5;
+  --color-neg: #dc2626;
+  --color-neg-soft: #fef2f2;
+
+  /* Typography */
+  --font-mono:
+    ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
+    'Courier New', monospace;
+
+  /* Layout */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 4px 12px -2px rgba(15, 23, 42, 0.08);
+}
+
+/* Dark palette — applied when data-theme="dark" is set on <html>.
+   The pre-hydration script in app/layout.tsx resolves
+   stored preference (light|dark|system) + prefers-color-scheme into
+   one of "light" | "dark" and writes it as data-theme. */
+:root[data-theme='dark'] {
+  --color-bg: #0a0d14;
+  --color-fg: #e7e9ee;
+  --color-muted: #8a90a0;
+  --color-subtle: #5e6472;
+  --color-border: #1c2030;
+  --color-border-strong: #2a3046;
+  --color-card: #111524;
+  --color-card-hover: #161b2d;
+  --color-elevated: #181d31;
+
+  --color-accent: #5b86f7;
+  --color-accent-hover: #7a9efc;
+  --color-accent-fg: #0a0d14;
+  --color-accent-soft: #182142;
+
+  --color-pos: #34d399;
+  --color-pos-soft: #0e2a22;
+  --color-neg: #f87171;
+  --color-neg-soft: #2c1418;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 12px -2px rgba(0, 0, 0, 0.5);
+}
+
+/* Warning badge — token-free amber that adapts to theme via data-theme. */
+.badge-warning {
+  background-color: #fffbeb;
+  color: #b45309;
+  border-color: rgba(245, 158, 11, 0.3);
+}
+:root[data-theme='dark'] .badge-warning {
+  background-color: rgba(120, 53, 15, 0.25);
+  color: #fcd34d;
+  border-color: rgba(245, 158, 11, 0.25);
+}
+
+html,
+body {
+  background-color: var(--color-bg);
+  color: var(--color-fg);
+  font-feature-settings: 'cv11', 'ss01';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Tabular figures helper */
+.tnum {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum';
+}
+
+/* Subtle scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 8px;
+  border: 2px solid var(--color-bg);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-border-strong);
+}
+
+/* Focus ring */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Animations */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fade-in {
+  animation: fade-in 0.18s ease-out;
+}

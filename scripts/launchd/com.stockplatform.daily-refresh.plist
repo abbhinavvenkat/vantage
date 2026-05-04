@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.stockplatform.daily-refresh</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/bash</string>
+    <string>VANTAGE_PROJECT_ROOT/scripts/daily-refresh.sh</string>
+  </array>
+
+  <!--
+    Runs daily at 18:30 local time. Set your Mac's timezone to Asia/Kolkata
+    so this fires shortly after the NSE 15:30 close + EOD settlement window.
+    launchd interprets StartCalendarInterval in the system's local timezone.
+
+    Install via: bash scripts/launchd/install.sh
+    (The installer substitutes VANTAGE_PROJECT_ROOT with the real path.)
+  -->
+  <key>StartCalendarInterval</key>
+  <dict>
+    <key>Hour</key>
+    <integer>18</integer>
+    <key>Minute</key>
+    <integer>30</integer>
+  </dict>
+
+  <key>RunAtLoad</key>
+  <false/>
+
+  <key>WorkingDirectory</key>
+  <string>VANTAGE_PROJECT_ROOT</string>
+
+  <key>StandardOutPath</key>
+  <string>VANTAGE_PROJECT_ROOT/data/logs/launchd.out.log</string>
+
+  <key>StandardErrorPath</key>
+  <string>VANTAGE_PROJECT_ROOT/data/logs/launchd.err.log</string>
+
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>/opt/miniconda3/envs/stock-platform/bin:/usr/local/bin:/usr/bin:/bin</string>
+  </dict>
+</dict>
+</plist>
